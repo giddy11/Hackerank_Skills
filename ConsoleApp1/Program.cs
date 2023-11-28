@@ -1,1 +1,67 @@
 ﻿
+/* Enter your code here. Read input from STDIN. Print output to STDOUT. Your class should be named Solution */
+
+using System.Text.RegularExpressions;
+
+string userInput;
+var store = new List<string>();
+
+while (!string.IsNullOrEmpty(userInput = Console.ReadLine()))
+{
+    string[] parts = userInput.Split(';');
+    string result = null;
+
+    char operation = parts[0][0];
+    char type = parts[1][0];
+    string words = parts[2];
+
+    if (operation == 'S')
+    {
+        result = SplitCamelCase(words).ToLower();
+    }
+    else if (operation == 'C')
+        result = CombineCamelCase(type, words.Split(' '));
+        
+
+    store.Add(result);
+}    
+
+string SplitCamelCase(string words)
+{
+    string[] wordsArray = Regex.Split(words, @"(?<!^)(?=[A-Z])");
+
+    string lastWord = wordsArray.LastOrDefault();
+    if (lastWord != null && lastWord.EndsWith("()"))
+    {
+        wordsArray[wordsArray.Length - 1] = lastWord.Substring(0, lastWord.Length - 2);
+    }
+
+    return string.Join(" ", wordsArray);
+}
+
+string CombineCamelCase(char type, string[] words)
+{
+    string result = null;
+
+    if (type == 'C')
+        result = char.ToUpper(words[0][0]) + words[0].Substring(1);
+    else
+        result = char.ToLower(words[0][0]) + words[0].Substring(1);
+
+    for (int i = 1; i < words.Length; i++)
+        result += char.ToUpper(words[i][0]) + words[i].Substring(1);
+
+    // Add parentheses for methods
+    if (type == 'M')
+        result += "()";
+
+    return result;
+}
+
+foreach (string word in store)
+{
+    Console.WriteLine(word);
+}
+
+
+ Console.WriteLine();
